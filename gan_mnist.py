@@ -4,7 +4,7 @@ import os
 import argparse
 from tensorflow.examples.tutorials.mnist import input_data
 save_path = "./save_model/mnist/"
-
+# MNIST image dimension: (28, 28)
 class Machine:
     def __init__(self, args):
         self.image_dimension = args.image_dimension
@@ -21,8 +21,8 @@ class Machine:
         self.real_image = tf.placeholder(tf.float32, [None, self.image_dimension])
         self.D_r = self.discriminator(self.real_image, self.Y, True)
 
-        self.loss_D = tf.reduce_mean(tf.log(self.D_r) + tf.log(1-self.D_g))
-        self.loss_G = tf.reduce_mean(tf.log(self.D_g))
+        self.loss_D = tf.reduce_mean(tf.log(tf.maximum(self.D_r,1e-10)) + tf.log(tf.maximum(1-self.D_g,1e-10)))
+        self.loss_G = tf.reduce_mean(tf.log(tf.maximum(self.D_g,1e-10)))
         D_weights = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='discriminator')
         G_weights = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='generator')
         self.train_D = tf.train.AdamOptimizer(0.0001).minimize(-self.loss_D, var_list=D_weights)
@@ -30,7 +30,7 @@ class Machine:
 
     def generator(self, input, labels):
         with tf.variable_scope('generator'):
-            inputs = tf.concat([input, labels], 1)
+            inputs = tf.concat([input, labels], 1) #(?, 138)
             hidden = tf.contrib.layers.fully_connected(inputs, 256, activation_fn = tf.nn.relu)
             output = tf.contrib.layers.fully_connected(hidden, self.image_dimension, activation_fn = tf.nn.sigmoid)
         return output
