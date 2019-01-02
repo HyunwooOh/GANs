@@ -24,5 +24,9 @@ Tensorflow implementation of Generative Adversarial Networks.
     - train epoch 100 <img src = './fig/gan_fashion_mnist_100.png'>
     - train epoch 200 <img src = './fig/gan_fashion_mnist_200.png'>
 
-#### To be added
+### To be added
 - GANs for cifar10.
+
+### References
+- studies
+    - [NIPS 2016 tutorial: Generative adversarial networks](https://arxiv.org/abs/1701.00160)
